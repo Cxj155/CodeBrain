@@ -1,0 +1,19 @@
+#!/bin/bash
+
+JAVA_SRC="./sample/springboot"
+PY_SRC="./sample/requests-py"
+
+echo "=====Java 50文件比对tree-sitter与javac====="
+ls ${JAVA_SRC} | head -n 50 | while read file
+do
+  ts=$(tree-sitter parse "${JAVA_SRC}/${file}" | grep -E "class_declaration|method_declaration" | wc -l)
+  javac_cnt=$(javac -Xprint:parse "${JAVA_SRC}/${file}" 2>/dev/null | grep -E "CLASS|METHOD" | wc -l)
+  echo "${file} | tree-sitter:${ts} | javac:${javac_cnt}"
+done
+
+echo -e "\n=====Python 50文件比对tree-sitter与py_compile===="
+ls ${PY_SRC} | head -n 50 | while read file
+do
+  ts=$(tree-sitter parse "${PY_SRC}/${file}" | grep -E "class_definition|function_definition" | wc -l)
+  echo "${file} | tree-sitter节点数:${ts}"
+done

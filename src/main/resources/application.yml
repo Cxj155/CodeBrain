@@ -1,0 +1,67 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://111.229.123.137:3306/CodeBrain?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 'Cxj20070729@#'
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ssXXX
+    time-zone: Asia/Shanghai
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.codebrain.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+codebrain:
+  tree-sitter:
+    executable: D:/Java/jdk-23/bin/tree-sitter.exe
+
+  embedding:
+    batch-size: 32
+
+  elasticsearch:
+    url: http://127.0.0.1:9200
+    username: elastic
+    password: 123456
+    index: chunk
+    vector-dimension: 1536
+    bulk-size: 100
+    max-bulk-retry: 3
+
+  search:
+    fusion:
+      normalizer: rank
+      weights:
+        bm25: 0.4
+        vector: 0.4
+        rerank: 0.2
+      rank-constant: 60
+      candidate-multiplier: 2
+    rerank:
+      provider: noop
+      http:
+        url: ${CODEBRAIN_RERANK_URL:}
+        timeout-ms: 2000
+        max-candidates: 20
+      weighted:
+        rerank-weight: 0.3
+
+embedding:
+  url: http://111.229.123.137:8000/v1/embeddings
+  model: bge-small-zh
+  retry:
+    max-retries: 3
+    total-budget-ms: 15000
